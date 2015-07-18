@@ -1,0 +1,81 @@
+/******** GLOBAL NAMESPACE AND VARIABLES ********/
+var wnt = {};
+		wnt.mobile = false;
+		wnt.ie = false;
+		wnt.steps = localStorage.steps;
+		
+/******** DEVICE TYPE AND IE DETECTION ********/
+if( navigator.userAgent.match(/Android/i)
+ || navigator.userAgent.match(/webOS/i)
+ || navigator.userAgent.match(/iPhone/i)
+ || navigator.userAgent.match(/iPad/i)
+ || navigator.userAgent.match(/iPod/i)
+ || navigator.userAgent.match(/BlackBerry/i)
+ ){
+	wnt.mobile = true;
+}
+if(navigator.userAgent.match(/MSIE/i)){
+		wnt.ie = true;
+}
+if(wnt.mobile == true){
+	var watchid = navigator.geolocation.watchPosition(gotPosition, errorGettingPosition, {'enableHighAccuracy':true,'timeout':10000,'maximumAge':20000});   //10 sec & 20 sec
+} else {
+	$('h1').html('You are not using a mobile device.');
+}
+
+
+/******** ONLOAD ********/
+$(function() {
+	$('h3').click(function(){
+		localStorage.clear();
+		wnt.steps = 0;
+		stepstaken(wnt.steps);
+	});
+});
+//2.5 feet = 0.762 meters (average stride)   ...   conversion factor is 3.2808
+//1 foot = 0.3048 meters
+//1 mile = 1609.344 meters
+//1 meter per second = 2.23693629 miles per hour
+function gotPosition(pos){
+	//var outputStr =	"latitude:"+ pos.coords.latitude +"<br>"+
+									"longitude:"+ pos.coords.longitude +"<br>"+
+									"accuracy:"+ pos.coords.accuracy +"<br>"+
+								
+									"altitude:"+ pos.coords.altitude +"<br>"+
+									"altitudeAccuracy:"+ pos.coords.altitudeAccuracy +"<br>"+
+									"heading:"+ pos.coords.heading +"<br>"+
+									"speed:"+ pos.coords.speed +"";
+									
+	//var metersTraveled = pos.coords.speed * 10;   //NOTE: gets speed every 10 seconds, so (pos.coords.speed * 10)  ...meterspersec * sec... = meters traveled    ...   /0.762 = steps
+	//!!!!! getting 8x the steps I should ... 2*10=20/0.762=26.2steps in 10 seconds???
+	var steps = pos.coords.speed / 0.762;
+	stepstaken(steps);
+	
+	
+	var mps = pos.coords.speed;
+	var mph = 2.23693629 * pos.coords.speed;   
+	mph = Math.round(mph*Math.pow(10,1))/Math.pow(10,1);
+	mps = Math.round(mps*Math.pow(10,1))/Math.pow(10,1);
+	$('h1').html('Current Speed<br /><span style="color:#ff0000;">'+mph+' MPH</span>');
+}
+function errorGettingPosition(err){
+	if(err.code==1){
+		alert("User denied geolocation.");
+	} else if(err.code==2){
+		alert("Position unavailable.");
+	} else if(err.code==3){
+		alert("Timeout expired.");
+	} else {
+		alert("ERROR:"+ err.message);
+	}
+}
+function stepstaken(steps){
+	wnt.steps = wnt.steps + steps;
+	localStorage.steps = wnt.steps;
+	$('h2').html('Total Steps<br /><span style="color:#ff0000;">'+Math.round(wnt.steps)+' Steps</span>');
+}
+$('#add').click(function(){
+	console.log($('#steps').val());
+	localStorage.setItem('steps',parseInt(localStorage.steps) + parseInt($('#steps').val()));
+	console.log(localStorage.getItem('steps'));
+});

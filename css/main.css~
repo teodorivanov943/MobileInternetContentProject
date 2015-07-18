@@ -1,0 +1,85 @@
+html, body
+{
+	background-color: #CCE0FF;
+}
+
+.container
+{
+	width: 100%;
+}
+
+.header
+{
+	border-radius: 5px;
+	background-color: #3A599A;
+	margin:5px auto;
+	padding: 1px;
+	width: 100%
+}
+
+.header h1 
+{
+	color: #fff;
+	text-align: center;
+}
+
+.header span
+{
+	color: #6CB56C;
+}
+
+
+
+.menu
+{
+	margin: 10px auto;
+	width: 100%;
+}
+
+.panel
+{
+	float: left;
+	margin-left: 1%;
+	width: 32%;
+}
+
+.panel-heading
+{
+	text-align: center;
+	height: 65px;
+	word-wrap: break-word;
+}
+
+.panel-body img 
+{
+	
+	display: block;	
+    height: auto;
+    width: auto\9; /* ie8 */
+	max-width: 100%;
+	margin: 0 auto;
+}
+
+.calc_form
+{
+	margin-top: 10px;
+}
+
+.chronometer
+{
+	width: 230px;
+	margin: 35px auto;
+}
+
+
+#time
+{
+	height: 36px;
+	width: 100px;
+	text-indent: 12px;
+}
+
+.result
+{
+	font-size: 22px;
+}

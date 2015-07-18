@@ -1,0 +1,66 @@
+$(window).load(function() 
+{
+	var coef;
+	var brm;
+	$(".btn").click(function()
+	{
+		var age = $("#age").val().length ? parseInt($("#age").val()) : 0;
+		var height = $("#height").val().length ? parseInt($("#height").val()) : 0;
+		var weight = $("#weight").val().length ? parseInt($("#weight").val()) : 0;
+		var gender = $('input[name=sex]:checked').val();
+		
+		var exercise = parseInt($(".exercise").val());
+		
+		var genders = ["male", "female"];
+		var exerciseLevel = [1, 2, 3, 4, 5];
+		
+		var minAge = 1;
+		var maxAge = 130;
+
+		var minHeight = 40;
+		var maxHeight = 260;
+
+		var minWeight = 20;
+		var maxWeight = 600;
+		
+		if(age < minAge || age > maxAge || height < minHeight || height > maxHeight
+			|| weight < minWeight || weight > maxWeight || $.inArray(gender, genders) == -1
+			|| !$.inArray(exercise, exerciseLevel) == -1) 
+		{
+			$(".result").text("Invalid input!");
+		}		
+		else
+		{
+			if(exercise == 1)
+			{
+				coef = 1.2;
+			}
+			else if(exercise == 2)
+			{
+				coef = 1.375;
+			}
+			else if(exercise == 3)
+			{
+				coef = 1.55;
+			}
+			else if(exercise == 4)
+			{
+				coef = 1.725;
+			}
+			else
+			{
+				coef = 1.9;
+			}
+			
+			if(gender == 'male')
+			{
+				brm = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+			}
+			else if(gender == 'female')
+			{
+				brm = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+			}
+			$(".result").text("Your recommended  daily caloric intake is " + parseInt(brm * coef));
+		}
+	})	
+})

@@ -1,0 +1,82 @@
+	/******** GLOBAL NAMESPACE AND VARIABLES ********/
+	var wnt = {};
+			wnt.mobile = false;
+			wnt.ie = false;
+			wnt.steps = parseInt(localStorage.steps);
+		
+	/******** DEVICE TYPE AND IE DETECTION ********/
+	if( navigator.userAgent.match(/Android/i)
+	  || navigator.userAgent.match(/webOS/i)
+	  || navigator.userAgent.match(/iPhone/i)
+	  || navigator.userAgent.match(/iPad/i)
+	  || navigator.userAgent.match(/iPod/i)
+	  || navigator.userAgent.match(/BlackBerry/i)
+	  )
+	{
+		wnt.mobile = true;
+	}
+	if(navigator.userAgent.match(/MSIE/i))
+	{
+			wnt.ie = true;
+	}
+	if(wnt.mobile == true)
+	{
+		var watchid = navigator.geolocation.watchPosition(gotPosition, errorGettingPosition, 					
+			{'enableHighAccuracy':true, 'timeout':10000, 'maximumAge':20000});   //10 sec & 20 sec
+	}
+	else 
+	{
+		$('#result').html('You are not using a mobile device.');
+	}
+
+
+$(window).load(function() {
+
+	/******** ONLOAD ********/
+	$(function() {
+		$('#clear').click(function(){
+			localStorage.clear();
+			wnt.steps = 0;
+			stepstaken(wnt.steps);
+		});
+	});
+
+	//2.5 feet = 0.762 meters (average stride)   ...   conversion factor is 3.2808
+	//1 foot = 0.3048 meters
+	//1 mile = 1609.344 meters
+	//1 meter per second = 2.23693629 miles per hour
+	
+	function gotPosition(pos)
+	{
+		//alert(pos.coords.speed);
+		var steps = pos.coords.speed / 0.762;
+		stepstaken(steps);
+	}
+
+	function errorGettingPosition(err)
+	{
+		if(err.code==1)
+		{
+			alert("User denied geolocation.");
+		} 
+		else if(err.code==2)
+		{
+			alert("Position unavailable.");
+		} 
+		else if(err.code==3)
+		{
+			alert("Timeout expired.");
+		} 
+		else 
+		{
+			alert("ERROR:"+ err.message);
+		}
+	}
+
+	function stepstaken(steps)
+	{
+		wnt.steps = wnt.steps + steps;
+		localStorage.steps = wnt.steps;
+		$('#result').html('Total Steps<br /><span style="color:#ff0000;">'+Math.round(wnt.steps)+' Steps</span>');
+	}
+});
